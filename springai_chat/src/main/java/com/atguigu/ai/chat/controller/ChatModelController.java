@@ -1,5 +1,6 @@
 package com.atguigu.ai.chat.controller;
 
+import jakarta.annotation.Resource;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
@@ -21,17 +22,14 @@ import java.util.stream.Collectors;
 @RestController
 public class ChatModelController {
 
-    @Autowired
+    @Resource
     private ChatModel chatModel;
 
     //提示词操作
     // name：名字
     // voice: 习惯
     @GetMapping("/prompt")
-    public String prompt(@RequestParam("name")
-                             String name,
-                         @RequestParam("voice")
-                             String voice) {
+    public String prompt(@RequestParam("name") String name, @RequestParam("voice") String voice) {
         //设置用户输入信息
         String userText = """
             给我推荐北京的至少三种美食
@@ -66,8 +64,7 @@ public class ChatModelController {
     //String call(String message)
     @GetMapping("/chatModel01")
     public String chatModel01(@RequestParam("msg") String msg) {
-        String result = chatModel.call(msg);
-        return result;
+        return chatModel.call(msg);
     }
 
     //ChatResponse call(Prompt prompt);
@@ -76,13 +73,9 @@ public class ChatModelController {
         ChatResponse chatResponse = chatModel.call(
                 new Prompt(
                         msg,
-                        OpenAiChatOptions.builder()
-                                .model("deepseek-chat")
-                                .temperature(0.8)
-                                .build()
+                        OpenAiChatOptions.builder().model("deepseek-chat").temperature(0.8).build()
                 )
         );
-        String content = chatResponse.getResult().getOutput().getContent();
-        return content;
+        return chatResponse.getResult().getOutput().getContent();
     }
 }
