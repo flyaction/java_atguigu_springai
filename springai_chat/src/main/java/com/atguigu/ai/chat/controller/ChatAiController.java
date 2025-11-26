@@ -20,7 +20,8 @@ public class ChatAiController {
     }
 
     //角色预设，使用流式响应
-    @GetMapping(value = "/chataiStream",produces = "text/html;charset=UTF-8")
+    //@GetMapping(value = "/chataiStream",produces = "text/html;charset=UTF-8")
+    @GetMapping(value = "/chataiStream")
     public Flux<String> chatAiStream(@RequestParam(value = "msg") String message) {
         return chatClient.prompt().user(message).stream().content();
     }
