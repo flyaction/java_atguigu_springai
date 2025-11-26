@@ -6,11 +6,9 @@ import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
-import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.openai.OpenAiChatOptions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,13 +40,19 @@ public class ChatModelController {
             你的名字是{name},
             你应该用你的名字和{voice}的饮食习惯回复用户的请求。
             """;
+
+        /*String systemText2= """
+            你是一个美食咨询助手，可以帮助人们查询美食信息。
+            你的名字是皮二蒙,
+            你应该用你的名字和性价比高的饮食习惯回复用户的请求。
+            """;
+         Message systemMessage2 = new SystemMessage(systemText2);   */
+
         //使用Prompt Template 设置信息
         SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemText);
 
         //替换占位符
-        Message systemMessage =
-                systemPromptTemplate
-                        .createMessage(Map.of("name", name, "voice", voice));
+        Message systemMessage = systemPromptTemplate.createMessage(Map.of("name", name, "voice", voice));
 
         //使用Prompt封装
         Prompt prompt = new Prompt(List.of(userMessage,systemMessage));
@@ -56,9 +60,7 @@ public class ChatModelController {
         //调用chatModel方法
         ChatResponse response = chatModel.call(prompt);
         List<Generation> results = response.getResults();
-        return
-                results.stream().map(x->x.getOutput().getContent())
-                        .collect(Collectors.joining(""));
+        return results.stream().map(x->x.getOutput().getContent()).collect(Collectors.joining(""));
     }
 
     //String call(String message)
